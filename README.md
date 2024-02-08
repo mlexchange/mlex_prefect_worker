@@ -1,5 +1,34 @@
 # mlex_prefect_worker
 
+This repository contains the necessary scripts and configuration files to start a Prefect process worker with Podman and Slurm flows.
+
+## Getting Started
+
+1. Create a conda environment with the required packages:
+
+    ```bash
+    conda create --name myenv --file requirements.txt
+    ```
+
+2. Activate the conda environment:
+
+    ```bash
+    conda activate myenv
+    ```
+
+3. Change permissions for the shell scripts to make them executable:
+
+    ```bash
+    chmod +x start_worker.sh
+    chmod +x flows/podman/bash_run_podman.sh
+    ```
+
+4. Run the `start_worker.sh` script to start the Prefect worker:
+
+    ```bash
+    ./start_worker.sh
+    ```
+
 ## Copyright
 MLExchange Copyright (c) 2024, The Regents of the University of California,
 through Lawrence Berkeley National Laboratory (subject to receipt of
