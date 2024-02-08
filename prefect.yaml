@@ -1,0 +1,23 @@
+name: mlex_prefect_worker
+prefect-version: 2.14.0
+
+build:
+
+push:
+
+pull:
+- prefect.deployments.steps.set_working_directory:
+    directory: '{{ $PREFECT_WORK_DIR }}'
+
+deployments:
+- name: launch_podman
+  version: 0.0.1
+  tags: []
+  description: Launch podman container
+  entrypoint: flows/podman/podman_flows.py:launch_podman_flow
+  parameters: {}
+  work_pool:
+    name: mlex_pool
+    work_queue_name: default-queue
+    job_variables: {}
+  schedule: null
