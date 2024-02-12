@@ -10,7 +10,7 @@ image_uri=$1
 command=$2
 
 # Run the Podman container
-podman run -d $image_uri $command
+podman run "$image_uri" /bin/sh -c "$command"
 
 # Check if the Podman command was successful
 if [ "$?" -ne 0 ]; then
