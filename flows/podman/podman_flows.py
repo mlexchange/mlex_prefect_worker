@@ -1,35 +1,50 @@
-import subprocess
 from prefect import flow, get_run_logger
+from prefect.utilities.processutils import run_process
+import sys
+
+
+class Logger:
+    def __init__(self, logger, level="info"):
+        self.logger = getattr(logger, level)
+
+    def write(self, message):
+        if message != '\n':
+            self.logger(message)
+
+    def flush(self):
+        pass
+
+
+def setup_logger():
+    '''
+    Adopt stdout and stderr to prefect logger
+    '''
+    prefect_logger = get_run_logger()
+    sys.stdout = Logger(prefect_logger, level="info")
+    sys.stderr = Logger(prefect_logger, level="error")
+    return prefect_logger
 
 
 @flow(name="Podman flow")
-def launch_podman_flow(
+async def launch_podman_flow(
     image_name: str,
     image_tag: str,
-    command: str
+    command: str,
+    volumes: list = [],
+    network: str = "",
+    env_vars: dict = {},
     ):
 
-    logger = get_run_logger()
+    logger = setup_logger()
 
-    cmd = ['flows/podman/bash_run_podman.sh', f'{image_name}:{image_tag}', command]
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    cmd = [
+        'flows/podman/bash_run_podman.sh',
+        f'{image_name}:{image_tag}',
+        command,
+        ' '.join(volumes),
+        network,
+        ' '.join(f'{k}={v}' for k, v in env_vars.items())
+        ]
+    process = await run_process(cmd, stream_output=True)
 
-    # Log the output of the command
-    for line in process.stdout:
-        logger.info(line.decode())
-    
-    # Log the error of the command
-    for line in process.stderr:
-        logger.error(line.decode())
-    
-    # Close the file descriptors
-    process.stderr.close()
-    process.stdout.close()
-    
-    # Wait for the process to finish
-    return_code = process.wait()
-
-    # Raise an exception if the return code is not 0
-    if return_code:
-        raise subprocess.CalledProcessError(return_code, cmd)
-    return return_code
+    pass
