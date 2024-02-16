@@ -1,7 +1,7 @@
 source .env
 
 export PREFECT_WORK_DIR=$PREFECT_WORK_DIR
-prefect config set PREFECT_API_URL=$PREFECT_SERVER_API_HOST
+prefect config set PREFECT_API_URL=$PREFECT_API_URL
 
 prefect work-pool create mlex_pool --type "process"
 prefect work-pool set-concurrency-limit mlex_pool $PREFECT_WORK_POOL_CONCURRENCY
