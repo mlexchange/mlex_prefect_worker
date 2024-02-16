@@ -20,4 +20,8 @@ deployments:
     name: mlex_pool
     work_queue_name: default-queue
     job_variables: {}
-  schedule: null
+  schedule:
+  is_schedule_active: true
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /service/mlex_tomo_framework/mlex_prefect_worker
