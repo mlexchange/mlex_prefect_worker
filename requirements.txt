@@ -1,1 +1,1 @@
-prefect
+prefect==2.14.21
