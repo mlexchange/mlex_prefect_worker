@@ -1,6 +1,8 @@
+import sys
+import tempfile
+import yaml
 from prefect import flow, get_run_logger
 from prefect.utilities.processutils import run_process
-import sys
 
 
 class Logger:
@@ -30,6 +32,7 @@ async def launch_podman_flow(
     image_name: str,
     image_tag: str,
     command: str,
+    params: dict = {},
     volumes: list = [],
     network: str = "",
     env_vars: dict = {},
@@ -37,14 +40,22 @@ async def launch_podman_flow(
 
     logger = setup_logger()
 
-    cmd = [
-        'flows/podman/bash_run_podman.sh',
-        f'{image_name}:{image_tag}',
-        command,
-        ' '.join(volumes),
-        network,
-        ' '.join(f'{k}={v}' for k, v in env_vars.items())
-        ]
-    process = await run_process(cmd, stream_output=True)
+    # Create temporary file for parameters
+    with tempfile.NamedTemporaryFile(mode='w+t') as temp_file:
+        yaml.dump(params, temp_file)
+
+        # Mount extra volume with parameters yaml file
+        volumes += [f'{temp_file.name}:/app/work/config/params.yaml']
+
+        # Define podman command
+        cmd = [
+            'flows/podman/bash_run_podman.sh',
+            f'{image_name}:{image_tag}',
+            command,
+            ' '.join(volumes),
+            network,
+            ' '.join(f'{k}={v}' for k, v in env_vars.items())
+            ]
+        process = await run_process(cmd, stream_output=True)
 
     pass
