@@ -56,6 +56,7 @@ async def launch_podman_flow(
             network,
             ' '.join(f'{k}={v}' for k, v in env_vars.items())
             ]
+        logger.info(f"Launching with command: {cmd}")
         process = await run_process(cmd, stream_output=True)
 
     pass
