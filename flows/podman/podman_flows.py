@@ -31,7 +31,7 @@ def setup_logger():
 async def launch_podman_flow(
     image_name: str,
     image_tag: str,
-    command: str = "/app/work/config/params.yaml",
+    command: str = "python /app/work/config/params.yaml",
     params: dict = {},
     volumes: list = [],
     network: str = "",
