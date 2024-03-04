@@ -25,3 +25,18 @@ deployments:
   pull:
   - prefect.deployments.steps.set_working_directory:
       directory: /service/mlex_tomo_framework/mlex_prefect_worker
+- name: launch_parent_flow
+  version: 0.0.1
+  tags: []
+  description: Launch parent flow
+  entrypoint: flows/parent_flow.py:launch_parent_flow
+  parameters: {}
+  work_pool:
+    name: mlex_pool
+    work_queue_name: default-queue
+    job_variables: {}
+  schedule:
+  is_schedule_active: true
+  pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /service/mlex_tomo_framework/mlex_prefect_worker
