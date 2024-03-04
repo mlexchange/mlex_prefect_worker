@@ -1,7 +1,6 @@
-import os
 from enum import Enum
 
-from prefect import flow, get_run_logger
+from prefect import context, flow, get_run_logger
 
 from flows.podman.podman_flows import launch_podman_flow
 
@@ -17,7 +16,7 @@ async def launch_parent_flow(
     params_list: list[dict],
 ):
     prefect_logger = get_run_logger()
-    flow_run_id = os.getenv("PREFECT__FLOW_RUN_ID", "")
+    flow_run_id = context.get_run_context().flow_run.id
 
     for params in params_list:
         if flow_type == FlowType.podman:
