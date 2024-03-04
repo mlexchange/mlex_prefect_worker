@@ -34,7 +34,7 @@ async def launch_podman_flow(
     parent_run_id: str,
     image_name: str,
     image_tag: str,
-    command: str,
+    command: str = "python src/train.py /app/work/config/params.yaml",
     params: dict = {},
     volumes: list = [],
     network: str = "",
@@ -63,6 +63,7 @@ async def launch_podman_flow(
             network,
             " ".join(f"{k}={v}" for k, v in env_vars.items()),
         ]
+        logger.info(f"Launching with command: {cmd}")
         process = await run_process(cmd, stream_output=True)
 
     if process.returncode != 0:
