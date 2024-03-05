@@ -27,36 +27,29 @@ def setup_logger():
     return prefect_logger
 
 
-@flow(name="Podman flow")
-async def launch_podman_flow(
-    image_name: str,
-    image_tag: str,
-    command: str = "python src/train.py",
-    params: dict = {},
-    volumes: list = [],
-    network: str = "",
-    env_vars: dict = {},
-        ):
+@flow(name="launch_conda")
+async def launch_conda(
+    conda_env_name: str,
+    python_file_name: str = "../mlex_dlsia_segmentation_prototype/src/train.py",
+    params: dict = {}
+):
 
     logger = setup_logger()
-
+    # logger = get_run_logger()
     # Create temporary file for parameters
     with tempfile.NamedTemporaryFile(mode='w+t') as temp_file:
         yaml.dump(params, temp_file)
-
-        # Mount extra volume with parameters yaml file
-        volumes += [f'{temp_file.name}:/app/work/config/params.yaml']
-        command = f"{command} /app/work/config/params.yaml"
         # Define podman command
         cmd = [
-            'flows/podman/bash_run_podman.sh',
-            f'{image_name}:{image_tag}',
-            command,
-            ' '.join(volumes),
-            network,
-            ' '.join(f'{k}={v}' for k, v in env_vars.items())
+            'flows/conda/run_conda.sh',
+            conda_env_name,
+            python_file_name,
+            temp_file.name
             ]
         logger.info(f"Launching with command: {cmd}")
         await run_process(cmd, stream_output=True)
 
-    pass
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(launch_conda("dlsia", params={"foo": "bar"}))
