@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Field, Optional
 
 from pydantic import BaseModel
 
@@ -6,7 +6,9 @@ from pydantic import BaseModel
 class PodmanParams(BaseModel):
     image_name: str
     image_tag: str
-    command: str
+    command: str = Field(
+        description="Command to run in podman", default="python src/train.py"
+    )
     model_params: Optional[dict] = {}
     volumes: Optional[list] = []
     network: Optional[str] = ""

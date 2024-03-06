@@ -1,4 +1,15 @@
 [flake8]
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    versioneer.py,
+    tiled/_version.py,
+    tiled/serialization/_zipfile_py39.py,
+    docs/source/conf.py,
+    share,
+    web-frontend,
 # 127 is width of the Github code viewer,
 # black default is 88 so this will only warn about comments >127
 max-line-length = 127

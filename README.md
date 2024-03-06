@@ -1,6 +1,6 @@
 # mlex_prefect_worker
 
-This repository contains the necessary scripts and configuration files to start a Prefect process worker with Podman and Slurm flows.
+This repository contains the necessary scripts and configuration files to start a Prefect process worker with conda, Podman and Slurm flows.
 
 ## Getting Started
 

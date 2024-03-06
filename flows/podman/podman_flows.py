@@ -37,7 +37,6 @@ async def launch_podman(
     podman_params: PodmanParams,
     parent_run_id: uuid.UUID = None,
 ):
-
     logger = setup_logger()
 
     if parent_run_id:
@@ -56,11 +55,13 @@ async def launch_podman(
         volumes = podman_params.volumes + [
             f"{temp_file.name}:/app/work/config/params.yaml"
         ]
+        command = f"{podman_params.command} /app/work/config/params.yaml"
+
         # Define podman command
         cmd = [
             "flows/podman/bash_run_podman.sh",
             f"{podman_params.image_name}:{podman_params.image_tag}",
-            podman_params.command,
+            command,
             " ".join(volumes),
             podman_params.network,
             " ".join(f"{k}={v}" for k, v in podman_params.env_vars.items()),
