@@ -35,11 +35,10 @@ async def launch_conda(
 ):
 
     logger = setup_logger()
-    # logger = get_run_logger()
     # Create temporary file for parameters
     with tempfile.NamedTemporaryFile(mode='w+t') as temp_file:
         yaml.dump(params, temp_file)
-        # Define podman command
+        # Define conda command
         cmd = [
             'flows/conda/run_conda.sh',
             conda_env_name,
