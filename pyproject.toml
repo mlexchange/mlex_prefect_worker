@@ -1,0 +1,12 @@
+[tool.poetry]
+name = "mlexworker"
+version = "0.2.0"
+description = ""
+readme = "README.md"
+packages = [
+    { include = "flows/**/*" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+prefect = "2.14.21"
