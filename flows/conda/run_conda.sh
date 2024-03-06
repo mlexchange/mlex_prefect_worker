@@ -16,4 +16,4 @@ yaml_file=$3
 echo Calling model with:  conda run -n $conda_environment $python_file $yaml_file
 
 # Call python with the python file and yaml file as arguments
-conda run -n $conda_environment $python_file $yaml_file
+conda run -n $conda_environment python $python_file $yaml_file
