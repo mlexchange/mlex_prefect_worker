@@ -14,7 +14,7 @@ deployments:
   version: 0.0.1
   tags: []
   description: Launch podman container
-  entrypoint: flows/podman/podman_flows.py:launch_podman_flow
+  entrypoint: flows/podman/podman_flows.py:launch_podman
   parameters: {}
   work_pool:
     name: mlex_pool
@@ -22,9 +22,6 @@ deployments:
     job_variables: {}
   schedule:
   is_schedule_active: true
-  pull:
-  - prefect.deployments.steps.set_working_directory:
-      directory: /service/mlex_tomo_framework/mlex_prefect_worker
 - name: launch_parent_flow
   version: 0.0.1
   tags: []
@@ -37,6 +34,3 @@ deployments:
     job_variables: {}
   schedule:
   is_schedule_active: true
-  pull:
-  - prefect.deployments.steps.set_working_directory:
-      directory: /service/mlex_tomo_framework/mlex_prefect_worker

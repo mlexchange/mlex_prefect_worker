@@ -7,6 +7,8 @@ from prefect import context, flow, get_run_logger
 from prefect.states import Failed
 from prefect.utilities.processutils import run_process
 
+from flows.podman.schema import PodmanParams
+
 
 class Logger:
     def __init__(self, logger, level="info"):
@@ -31,14 +33,8 @@ def setup_logger():
 
 
 @flow(name="Podman flow")
-async def launch_podman_flow(
-    image_name: str,
-    image_tag: str,
-    command: str = "python src/train.py /app/work/config/params.yaml",
-    params: dict = {},
-    volumes: list = [],
-    network: str = "",
-    env_vars: dict = {},
+async def launch_podman(
+    podman_params: PodmanParams,
     parent_run_id: uuid.UUID = None,
 ):
 
@@ -46,27 +42,28 @@ async def launch_podman_flow(
 
     if parent_run_id:
         # Append parent run id to parameters if provided
-        params["uid"] = parent_run_id
+        podman_params.model_params["uid"] = parent_run_id
     else:
         # Otherwise, append current flow run id
-        params["uid"] = context.get_run_context().flow_run.id
+        podman_params.model_params["uid"] = context.get_run_context().flow_run.id
 
     # Create temporary file for parameters
     with tempfile.NamedTemporaryFile(mode="w+t") as temp_file:
-        yaml.dump(params, temp_file)
+        yaml.dump(podman_params.model_params, temp_file)
         logger.info(f"Parameters file: {temp_file.name}")
 
         # Mount extra volume with parameters yaml file
-        volumes += [f"{temp_file.name}:/app/work/config/params.yaml"]
-
+        volumes = podman_params.volumes + [
+            f"{temp_file.name}:/app/work/config/params.yaml"
+        ]
         # Define podman command
         cmd = [
             "flows/podman/bash_run_podman.sh",
-            f"{image_name}:{image_tag}",
-            command,
+            f"{podman_params.image_name}:{podman_params.image_tag}",
+            podman_params.command,
             " ".join(volumes),
-            network,
-            " ".join(f"{k}={v}" for k, v in env_vars.items()),
+            podman_params.network,
+            " ".join(f"{k}={v}" for k, v in podman_params.env_vars.items()),
         ]
         logger.info(f"Launching with command: {cmd}")
         process = await run_process(cmd, stream_output=True)
