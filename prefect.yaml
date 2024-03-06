@@ -22,6 +22,17 @@ deployments:
     job_variables: {}
   schedule:
   is_schedule_active: true
-  pull:
-  - prefect.deployments.steps.set_working_directory:
-      directory: /service/mlex_tomo_framework/mlex_prefect_worker
+
+
+- name: launch_conda
+  version: 0.0.1
+  tags: []
+  description: Launch podman container
+  entrypoint: flows/conda/conda_flows.py:launch_conda
+  parameters: {}
+  work_pool:
+    name: mlex_pool
+    work_queue_name: default-queue
+    job_variables: {}
+  schedule:
+  is_schedule_active: true
