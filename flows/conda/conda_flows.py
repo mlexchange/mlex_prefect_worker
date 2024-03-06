@@ -41,10 +41,12 @@ async def launch_conda(
 
     if parent_run_id:
         # Append parent run id to parameters if provided
-        conda_params.model_params["uid"] = parent_run_id
+        conda_params.model_params["io_parameters"]["uid"] = parent_run_id
     else:
         # Otherwise, append current flow run id
-        conda_params.model_params["uid"] = context.get_run_context().flow_run.id
+        conda_params.model_params["io_parameters"][
+            "uid"
+        ] = context.get_run_context().flow_run.id
 
     # Create temporary file for parameters
     with tempfile.NamedTemporaryFile(mode="w+t") as temp_file:
