@@ -49,3 +49,4 @@ if [ "$?" -ne 0 ]; then
 fi
 
 echo "Successfully launched Podman container"
+exit 0
