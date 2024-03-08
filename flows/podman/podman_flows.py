@@ -34,11 +34,11 @@ def setup_logger():
 @flow(name="Podman flow")
 async def launch_podman(
     podman_params: PodmanParams,
-    prev_flow_run_id: str = None,
+    prev_flow_run_id: str = "",
 ):
     logger = setup_logger()
 
-    if prev_flow_run_id is None and podman_params.params["io_parameters"]["uid_retrieve"] is None:
+    if prev_flow_run_id != "" and podman_params.params["io_parameters"]["uid_retrieve"] is "":
         # Append the previous flow run id to parameters if provided
         podman_params.params["io_parameters"]["uid_retrieve"] = prev_flow_run_id
 
