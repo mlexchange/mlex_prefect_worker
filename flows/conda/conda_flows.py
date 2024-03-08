@@ -37,7 +37,7 @@ async def launch_conda(
 ):
     logger = setup_logger()
 
-    if prev_flow_run_id:
+    if prev_flow_run_id is None and conda_params.params["io_parameters"]["uid_retrieve"] is None:
         # Append the previous flow run id to parameters if provided
         conda_params.params["io_parameters"]["uid_retrieve"] = prev_flow_run_id
 
