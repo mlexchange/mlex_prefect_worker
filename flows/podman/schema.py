@@ -9,7 +9,7 @@ class PodmanParams(BaseModel):
     command: str = Field(
         description="Command to run in podman", default="python src/train.py"
     )
-    model_params: Optional[dict] = {}
+    params: Optional[dict] = {}
     volumes: Optional[list] = []
     network: Optional[str] = ""
     env_vars: Optional[dict] = {}
