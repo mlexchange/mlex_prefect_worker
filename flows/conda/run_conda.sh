@@ -6,6 +6,8 @@ if [ $# -ne 3 ]; then
     exit 1
 fi
 
+CONDA_PATH="/dls/tmp/mlex/miniconda"
+source "$CONDA_PATH/etc/profile.d/conda.sh"
 # Assign arguments to variables
 conda_environment=$1
 python_file=$2
