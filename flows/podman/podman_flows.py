@@ -1,6 +1,5 @@
 import sys
 import tempfile
-import uuid
 
 import yaml
 from prefect import context, flow, get_run_logger
@@ -35,22 +34,22 @@ def setup_logger():
 @flow(name="Podman flow")
 async def launch_podman(
     podman_params: PodmanParams,
-    parent_run_id: uuid.UUID = None,
+    prev_flow_run_id: str = "",
 ):
     logger = setup_logger()
 
-    if parent_run_id:
-        # Append parent run id to parameters if provided
-        podman_params.model_params["io_parameters"]["uid"] = parent_run_id
-    else:
-        # Otherwise, append current flow run id
-        podman_params.model_params["io_parameters"][
-            "uid"
-        ] = context.get_run_context().flow_run.id
+    if prev_flow_run_id != "" and podman_params.params["io_parameters"]["uid_retrieve"] is "":
+        # Append the previous flow run id to parameters if provided
+        podman_params.params["io_parameters"]["uid_retrieve"] = prev_flow_run_id
+
+    current_flow_run_id = str(context.get_run_context().flow_run.id)
+
+    # Append current flow run id
+    podman_params.params["io_parameters"]["uid_save"] = current_flow_run_id
 
     # Create temporary file for parameters
     with tempfile.NamedTemporaryFile(mode="w+t") as temp_file:
-        yaml.dump(podman_params.model_params, temp_file)
+        yaml.dump(podman_params.params, temp_file)
         logger.info(f"Parameters file: {temp_file.name}")
 
         # Mount extra volume with parameters yaml file
@@ -73,4 +72,5 @@ async def launch_podman(
 
     if process.returncode != 0:
         return Failed(message="Podman command failed")
-    pass
+
+    return current_flow_run_id

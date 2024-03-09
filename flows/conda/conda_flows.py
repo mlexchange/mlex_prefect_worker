@@ -1,6 +1,5 @@
 import sys
 import tempfile
-import uuid
 
 import yaml
 from prefect import context, flow, get_run_logger
@@ -34,23 +33,22 @@ def setup_logger():
 @flow(name="launch_conda")
 async def launch_conda(
     conda_params: CondaParams,
-    parent_run_id: uuid.UUID = None,
+    prev_flow_run_id: str = "",
 ):
-
     logger = setup_logger()
 
-    if parent_run_id:
-        # Append parent run id to parameters if provided
-        conda_params.model_params["io_parameters"]["uid"] = parent_run_id
-    else:
-        # Otherwise, append current flow run id
-        conda_params.model_params["io_parameters"][
-            "uid"
-        ] = context.get_run_context().flow_run.id
+    if prev_flow_run_id != "" and conda_params.params["io_parameters"]["uid_retrieve"] == "":
+        # Append the previous flow run id to parameters if provided
+        conda_params.params["io_parameters"]["uid_retrieve"] = prev_flow_run_id
+
+    current_flow_run_id = str(context.get_run_context().flow_run.id)
+
+    # Append current flow run id
+    conda_params.params["io_parameters"]["uid_save"] = current_flow_run_id
 
     # Create temporary file for parameters
     with tempfile.NamedTemporaryFile(mode="w+t") as temp_file:
-        yaml.dump(conda_params.model_params, temp_file)
+        yaml.dump(conda_params.params, temp_file)
         # Define conda command
         cmd = [
             "flows/conda/run_conda.sh",
@@ -60,6 +58,8 @@ async def launch_conda(
         ]
         logger.info(f"Launching with command: {cmd}")
         await run_process(cmd, stream_output=True)
+
+    return current_flow_run_id
 
 
 if __name__ == "__main__":

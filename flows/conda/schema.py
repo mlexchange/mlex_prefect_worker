@@ -8,4 +8,4 @@ class CondaParams(BaseModel):
     python_file_name: str = Field(
         description="Python file to run", default="src/train.py"
     )
-    model_params: Optional[dict] = {}
+    params: Optional[dict] = {}
