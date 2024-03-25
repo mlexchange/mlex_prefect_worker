@@ -19,3 +19,12 @@ echo Calling model with:  conda run -n $conda_environment python $python_file $y
 
 # Call python with the python file and yaml file as arguments
 conda run -n $conda_environment python $python_file $yaml_file
+
+# Check if the Conda command was successful
+if [ "$?" -ne 0 ]; then
+    echo "Failed to run conda command"
+    exit 1
+fi
+
+echo "Successfully run conda command"
+exit 0

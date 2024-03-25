@@ -3,6 +3,7 @@ import tempfile
 
 import yaml
 from prefect import context, flow, get_run_logger
+from prefect.states import Failed
 from prefect.utilities.processutils import run_process
 
 from flows.conda.schema import CondaParams
@@ -37,7 +38,10 @@ async def launch_conda(
 ):
     logger = setup_logger()
 
-    if prev_flow_run_id != "" and conda_params.params["io_parameters"]["uid_retrieve"] == "":
+    if (
+        prev_flow_run_id != ""
+        and conda_params.params["io_parameters"]["uid_retrieve"] == ""
+    ):
         # Append the previous flow run id to parameters if provided
         conda_params.params["io_parameters"]["uid_retrieve"] = prev_flow_run_id
 
@@ -57,7 +61,10 @@ async def launch_conda(
             temp_file.name,
         ]
         logger.info(f"Launching with command: {cmd}")
-        await run_process(cmd, stream_output=True)
+        process = await run_process(cmd, stream_output=True)
+
+    if process.returncode != 0:
+        return Failed(message="Conda command failed")
 
     return current_flow_run_id
 
