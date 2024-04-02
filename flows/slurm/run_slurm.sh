@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check if all arguments are provided
-if [ $# -ne 5 ]; then
+if [ $# -ne 8 ]; then
     echo "Usage: $0 <job_name> <num_nodes> <partitions> <reservations> <max_time> <conda_env> <python_file> <yaml_file>"
     exit 1
 fi
