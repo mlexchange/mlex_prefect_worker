@@ -13,7 +13,7 @@ conda_environment=$1
 python_file=$2
 yaml_file=$3
 
-echo Calling model with:  conda run -n $conda_environment python $python_file $yaml_file
+echo Calling model with:  conda run --no-capture-output -n $conda_environment python $python_file $yaml_file
 
 # Call python with the python file and yaml file as arguments
 conda run --no-capture-output -n $conda_environment python $python_file $yaml_file
