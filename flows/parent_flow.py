@@ -24,7 +24,7 @@ async def launch_parent_flow(
 ):
     prefect_logger = get_run_logger()
 
-    flow_run_id = None
+    flow_run_id = ""
     for params in params_list:
         if flow_type == FlowType.podman:
             flow_run_id = await launch_podman(
