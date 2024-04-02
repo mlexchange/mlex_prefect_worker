@@ -55,7 +55,7 @@ async def launch_slurm(
         cmd = [
             "flows/slurm/run_slurm.sh",
             slurm_params.job_name,
-            slurm_params.num_nodes,
+            str(slurm_params.num_nodes),
             ",".join(slurm_params.partitions),
             ",".join(slurm_params.reservations),
             slurm_params.max_time,
