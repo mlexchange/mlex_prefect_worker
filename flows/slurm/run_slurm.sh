@@ -21,8 +21,21 @@ BATCH_SCRIPT=$(mktemp)
 
 # Write the Slurm batch script
 echo "#!/bin/bash" > $BATCH_SCRIPT
-echo "#SBATCH --partition=$partitions" >> $BATCH_SCRIPT
-echo "#SBATCH --reservation=$reservations" >> $BATCH_SCRIPT
+
+if [ "$partitions" = "" ]
+then
+    echo "Partitions is unset or empty"
+else
+    echo "#SBATCH --partition=$partitions" >> $BATCH_SCRIPT
+fi
+
+if [ "$reservations" = "" ]
+then
+    echo "Reservations is unset or empty"
+else
+    echo "#SBATCH --reservation=$reservations" >> $BATCH_SCRIPT
+fi
+
 echo "#SBATCH --nodes=$num_nodes" >> $BATCH_SCRIPT
 echo "#SBATCH --job-name=$job_name" >> $BATCH_SCRIPT
 echo "#SBATCH --time=$max_time" >> $BATCH_SCRIPT
