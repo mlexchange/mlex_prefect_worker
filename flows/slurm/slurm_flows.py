@@ -49,7 +49,7 @@ async def launch_slurm(
     slurm_params.params["io_parameters"]["uid_save"] = current_flow_run_id
 
     # Create temporary file for parameters
-    with tempfile.NamedTemporaryFile(mode="w+t") as temp_file:
+    with tempfile.NamedTemporaryFile(mode="w+t", dir=".") as temp_file:
         yaml.dump(slurm_params.params, temp_file)
         # Define conda command
         cmd = [
@@ -67,7 +67,7 @@ async def launch_slurm(
         process = await run_process(cmd, stream_output=True)
 
     if process.returncode != 0:
-        return Failed(message="Podman command failed")
+        return Failed(message="Slurm command failed")
     pass
 
     return current_flow_run_id

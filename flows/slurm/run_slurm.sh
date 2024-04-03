@@ -17,7 +17,7 @@ python_file=$7
 yaml_file=$8
 
 # Create a temporary Slurm batch script
-BATCH_SCRIPT=$(mktemp)
+BATCH_SCRIPT=$(mktemp ./tmp_script.XXXXXX)
 
 # Write the Slurm batch script
 echo "#!/bin/bash" > $BATCH_SCRIPT
@@ -39,15 +39,16 @@ fi
 echo "#SBATCH --nodes=$num_nodes" >> $BATCH_SCRIPT
 echo "#SBATCH --job-name=$job_name" >> $BATCH_SCRIPT
 echo "#SBATCH --time=$max_time" >> $BATCH_SCRIPT
-echo "module load python" >> $BATCH_SCRIPT
-echo "conda activate $conda_env" >> $BATCH_SCRIPT
+echo "unset LD_PRELOAD" >> $BATCH_SCRIPT
+echo "source /etc/profile.d/modules.sh" >> $BATCH_SCRIPT
+echo "module load maxwell mamba" >> $BATCH_SCRIPT
+echo ". mamba-init" >> $BATCH_SCRIPT
+echo "mamba activate $conda_env" >> $BATCH_SCRIPT
 echo "srun python $python_file $yaml_file" >> $BATCH_SCRIPT
+echo $BATCH_SCRIPT
 
 # Submit the Slurm batch script and capture the job ID
 JOB_ID=$(sbatch $BATCH_SCRIPT | awk '{print $4}')
-
-# Remove the temporary Slurm batch script
-rm $BATCH_SCRIPT
 
 # Print the job ID
 echo "Submitted job with ID $JOB_ID"
@@ -64,6 +65,10 @@ while true; do
     elif [[ $JOB_STATUS == *"FAILED"* ]]; then
         # If the job has failed, print an error message and exit with a non-zero status
         echo "Job $JOB_ID has failed" >&2
+        
+        # Remove the temporary Slurm batch script
+        rm $BATCH_SCRIPT
+        
         exit 1
     else
         # If the job is neither completed nor failed, print its status
@@ -71,3 +76,6 @@ while true; do
     fi
     sleep 10
 done
+
+# Remove the temporary Slurm batch script
+rm $BATCH_SCRIPT
