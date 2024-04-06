@@ -15,7 +15,7 @@ conda_env=$6
 forward_ports=$7
 submission_ssh_key=$8
 python_file=$9
-yaml_file=$10
+yaml_file=${10}
 
 # Create a temporary Slurm batch script
 BATCH_SCRIPT=$(mktemp ./tmp_script.XXXXXX)
