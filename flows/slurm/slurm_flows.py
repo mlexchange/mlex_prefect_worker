@@ -60,6 +60,8 @@ async def launch_slurm(
             ",".join(slurm_params.reservations),
             slurm_params.max_time,
             slurm_params.conda_env_name,
+            ",".join(slurm_params.forward_ports),
+            slurm_params.submission_ssh_key,
             slurm_params.python_file_name,
             temp_file.name,
         ]
