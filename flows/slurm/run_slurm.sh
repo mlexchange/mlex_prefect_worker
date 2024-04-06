@@ -37,6 +37,8 @@ else
     echo "#SBATCH --reservation=$reservations" >> $BATCH_SCRIPT
 fi
 
+JOB_SUBMISSION_HOST=$(hostname)
+
 echo "#SBATCH --nodes=$num_nodes" >> $BATCH_SCRIPT
 echo "#SBATCH --job-name=$job_name" >> $BATCH_SCRIPT
 echo "#SBATCH --time=$max_time" >> $BATCH_SCRIPT
@@ -63,13 +65,13 @@ if [ ! -z "$forward_ports" ]; then
     echo -n "-N " >> $BATCH_SCRIPT
     # Finally, specify host to tunnel to
     # & at the end of the line makes the command run in the background
-    echo -n "$USER@$JOB_SUBMISSION_HOST &" >> $BATCH_SCRIPT
+    echo "$USER@$JOB_SUBMISSION_HOST &" >> $BATCH_SCRIPT
 fi
 echo "srun python $python_file $yaml_file" >> $BATCH_SCRIPT
 echo $BATCH_SCRIPT
 
 # Submit the Slurm batch script and capture the job ID
-JOB_ID=$(sbatch --export=ALL,JOB_SUBMISSION_HOST=$(hostname),JOB_SUBMISSION_SSH_KEY="$submission_ssh_key" $BATCH_SCRIPT | awk '{print $4}')
+JOB_ID=$(sbatch --export=ALL,JOB_SUBMISSION_HOST=$JOB_SUBMISSION_HOST,JOB_SUBMISSION_SSH_KEY="$submission_ssh_key" $BATCH_SCRIPT | awk '{print $4}')
 
 # Print the job ID
 echo "Submitted job with ID $JOB_ID"
