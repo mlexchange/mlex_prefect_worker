@@ -69,7 +69,7 @@ echo "srun python $python_file $yaml_file" >> $BATCH_SCRIPT
 echo $BATCH_SCRIPT
 
 # Submit the Slurm batch script and capture the job ID
-JOB_ID=$(sbatch --export=ALL,JOB_SUBMISSION_HOST=$(hostname),JOB_SUBMISSION_SSH_KEY="$submission_ssh_key"
+JOB_ID=$(sbatch --export=ALL,JOB_SUBMISSION_HOST=$(hostname),JOB_SUBMISSION_SSH_KEY="$submission_ssh_key" $BATCH_SCRIPT | awk '{print $4}')
 
 # Print the job ID
 echo "Submitted job with ID $JOB_ID"
