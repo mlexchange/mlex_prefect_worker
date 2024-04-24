@@ -1,34 +1,12 @@
-import sys
 import tempfile
 
 import yaml
-from prefect import context, flow, get_run_logger
+from prefect import context, flow
 from prefect.states import Failed
 from prefect.utilities.processutils import run_process
 
 from flows.conda.schema import CondaParams
-
-
-class Logger:
-    def __init__(self, logger, level="info"):
-        self.logger = getattr(logger, level)
-
-    def write(self, message):
-        if message != "\n":
-            self.logger(message)
-
-    def flush(self):
-        pass
-
-
-def setup_logger():
-    """
-    Adopt stdout and stderr to prefect logger
-    """
-    prefect_logger = get_run_logger()
-    sys.stdout = Logger(prefect_logger, level="info")
-    sys.stderr = Logger(prefect_logger, level="error")
-    return prefect_logger
+from flows.logger import setup_logger
 
 
 @flow(name="launch_conda")

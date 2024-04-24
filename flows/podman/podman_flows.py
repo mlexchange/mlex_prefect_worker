@@ -1,34 +1,12 @@
-import sys
 import tempfile
 
 import yaml
-from prefect import context, flow, get_run_logger
+from prefect import context, flow
 from prefect.states import Failed
 from prefect.utilities.processutils import run_process
 
+from flows.logger import setup_logger
 from flows.podman.schema import PodmanParams
-
-
-class Logger:
-    def __init__(self, logger, level="info"):
-        self.logger = getattr(logger, level)
-
-    def write(self, message):
-        if message != "\n":
-            self.logger(message)
-
-    def flush(self):
-        pass
-
-
-def setup_logger():
-    """
-    Adopt stdout and stderr to prefect logger
-    """
-    prefect_logger = get_run_logger()
-    sys.stdout = Logger(prefect_logger, level="info")
-    sys.stderr = Logger(prefect_logger, level="error")
-    return prefect_logger
 
 
 @flow(name="Podman flow")
@@ -38,7 +16,10 @@ async def launch_podman(
 ):
     logger = setup_logger()
 
-    if prev_flow_run_id != "" and podman_params.params["io_parameters"]["uid_retrieve"] is "":
+    if (
+        prev_flow_run_id != ""
+        and podman_params.params["io_parameters"]["uid_retrieve"] == ""
+    ):
         # Append the previous flow run id to parameters if provided
         podman_params.params["io_parameters"]["uid_retrieve"] = prev_flow_run_id
 
