@@ -7,7 +7,7 @@ This repository contains the necessary scripts and configuration files to start 
 1. Create a conda environment with the required packages:
 
     ```bash
-    conda create --name myenv --file requirements.txt
+    conda create --name myenv python=3.11
     ```
 
 2. Activate the conda environment:
@@ -16,14 +16,20 @@ This repository contains the necessary scripts and configuration files to start 
     conda activate myenv
     ```
 
-3. Change permissions for the shell scripts to make them executable:
+3. Install the package. This will install dependencies.
+
+    ```bash
+    python -m pip install .
+    ```
+
+4. Change permissions for the shell scripts to make them executable:
 
     ```bash
     chmod +x start_worker.sh
     chmod +x flows/podman/bash_run_podman.sh
     ```
 
-4. Run the `start_worker.sh` script to start the Prefect worker:
+5. Run the `start_worker.sh` script to start the Prefect worker:
 
     ```bash
     ./start_worker.sh
