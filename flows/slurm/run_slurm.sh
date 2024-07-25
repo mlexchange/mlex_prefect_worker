@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# Check if all arguments are provided
+# Check if all arguments are provided, end with error code if not
 if [ $# -ne 10 ]; then
-    echo "Usage: $0 <job_name> <num_nodes> <partitions> <reservations> <max_time> <conda_env> <forward_ports> <submission_ssh_key> <python_file> <yaml_file>"
+    echo -n "Usage: $0 <job_name> <num_nodes> <partitions> <reservations> <max_time>" 
+    echo "<conda_env> <forward_ports> <submission_ssh_key> <python_file> <yaml_file>"
+    exit 1
 fi
 
 # Assign arguments to variables
