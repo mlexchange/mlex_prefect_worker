@@ -86,21 +86,23 @@ while true; do
     if [[ $JOB_STATUS == *"COMPLETED"* ]]; then
         # If the job is completed, break the loop
         echo "Job $JOB_ID has completed"
-        break
+        exit 0
+    # If the job has come error status, print an error message and exit with a non-zero status
     elif [[ $JOB_STATUS == *"FAILED"* ]]; then
-        # If the job has failed, print an error message and exit with a non-zero status
         echo "Job $JOB_ID has failed" >&2
-
-        # Remove the temporary Slurm batch script
-        rm $BATCH_SCRIPT
-
+        exit 1
+    elif [[ $JOB_STATUS == *"CANCELLED"* ]]; then
+        echo "Job $JOB_ID was cancelled" >&2
+        exit 1
+    elif [[ $JOB_STATUS == *"TIMEOUT"* ]]; then
+        echo "Job $JOB_ID ran out of time" >&2
         exit 1
     else
         # If the job is neither completed nor failed, print its status
         echo "Job $JOB_ID is $JOB_STATUS"
     fi
-    sleep 10
-done
 
 # Remove the temporary Slurm batch script
 rm $BATCH_SCRIPT
+    sleep 1
+done
