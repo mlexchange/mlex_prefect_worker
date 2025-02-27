@@ -5,6 +5,8 @@ from prefect import flow, get_run_logger
 
 from flows.conda.conda_flows import launch_conda
 from flows.conda.schema import CondaParams
+from flows.docker.docker_flows import launch_docker
+from flows.docker.schema import DockerParams
 from flows.podman.podman_flows import launch_podman
 from flows.podman.schema import PodmanParams
 from flows.slurm.schema import SlurmParams
@@ -15,12 +17,13 @@ class FlowType(str, Enum):
     podman = "podman"
     conda = "conda"
     slurm = "slurm"
+    docker = "docker"
 
 
 @flow(name="Parent flow")
 async def launch_parent_flow(
     flow_type: FlowType,
-    params_list: list[Union[PodmanParams, CondaParams, SlurmParams]],
+    params_list: list[Union[PodmanParams, CondaParams, SlurmParams, DockerParams]],
 ):
     prefect_logger = get_run_logger()
 
@@ -37,6 +40,10 @@ async def launch_parent_flow(
         elif flow_type == FlowType.slurm:
             flow_run_id = await launch_slurm(
                 slurm_params=params, prev_flow_run_id=flow_run_id
+            )
+        elif flow_type == FlowType.docker:
+            flow_run_id = await launch_docker(
+                docker_params=params, prev_flow_run_id=flow_run_id
             )
         else:
             prefect_logger.error("Flow type not supported")
