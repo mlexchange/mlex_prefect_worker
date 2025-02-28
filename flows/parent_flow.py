@@ -1,15 +1,10 @@
 from enum import Enum
-from typing import Union
 
 from prefect import flow, get_run_logger
 
 from flows.conda.conda_flows import launch_conda
-from flows.conda.schema import CondaParams
 from flows.docker.docker_flows import launch_docker
-from flows.docker.schema import DockerParams
 from flows.podman.podman_flows import launch_podman
-from flows.podman.schema import PodmanParams
-from flows.slurm.schema import SlurmParams
 from flows.slurm.slurm_flows import launch_slurm
 
 
@@ -23,7 +18,7 @@ class FlowType(str, Enum):
 @flow(name="Parent flow")
 async def launch_parent_flow(
     flow_type: FlowType,
-    params_list: list[Union[PodmanParams, CondaParams, SlurmParams, DockerParams]],
+    params_list: list[dict],
 ):
     prefect_logger = get_run_logger()
 
