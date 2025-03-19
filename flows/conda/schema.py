@@ -9,3 +9,6 @@ class CondaParams(BaseModel):
         description="Python file to run", default="src/train.py"
     )
     params: Optional[dict] = {}
+    
+    class Config:
+        extra = "forbid"

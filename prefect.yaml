@@ -11,7 +11,7 @@ pull:
 
 deployments:
 - name: launch_podman
-  version: 0.0.1
+  version: 0.1.0
   tags: []
   description: Launch podman container
   entrypoint: flows/podman/podman_flows.py:launch_podman
@@ -23,7 +23,7 @@ deployments:
   schedule:
   is_schedule_active: true
 - name: launch_conda
-  version: 0.0.1
+  version: 0.1.0
   tags: []
   description: Launch podman container
   entrypoint: flows/conda/conda_flows.py:launch_conda
@@ -34,8 +34,32 @@ deployments:
     job_variables: {}
   schedule:
   is_schedule_active: true
+- name: launch_slurm
+  version: 0.1.0
+  tags: []
+  description: Launch slurm job
+  entrypoint: flows/slurm/slurm_flows.py:launch_slurm
+  parameters: {}
+  work_pool:
+    name: mlex_pool
+    work_queue_name: default-queue
+    job_variables: {}
+  schedule:
+  is_schedule_active: true
+- name: launch_docker
+  version: 0.1.0
+  tags: []
+  description: Launch docker job
+  entrypoint: flows/docker/docker_flows.py:launch_docker
+  parameters: {}
+  work_pool:
+    name: mlex_pool
+    work_queue_name: default-queue
+    job_variables: {}
+  schedule:
+  is_schedule_active: true
 - name: launch_parent_flow
-  version: 0.0.1
+  version: 0.1.0
   tags: []
   description: Launch parent flow
   entrypoint: flows/parent_flow.py:launch_parent_flow
