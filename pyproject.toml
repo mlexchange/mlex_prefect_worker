@@ -13,6 +13,7 @@ readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.11"
 
 dependencies = [
+    "docker",
     "prefect==2.14.21",
     "typer<=0.9.4",
 ]
