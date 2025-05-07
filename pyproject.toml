@@ -15,6 +15,7 @@ requires-python = ">=3.11"
 dependencies = [
     "prefect==2.14.21",
     "typer<=0.9.4",
+    "griffe<=0.47.0",
 ]
 
 [project.optional-dependencies]
