@@ -42,7 +42,7 @@ async def launch_podman(
         # Define podman command
         cmd = [
             "flows/podman/bash_run_podman.sh",
-            f"{podman_params.image_name}:{podman_params.image_tag}",
+            f"mlexchange/{podman_params.image_name}:{podman_params.image_tag}",
             command,
             " ".join(volumes),
             podman_params.network,
