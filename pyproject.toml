@@ -13,8 +13,11 @@ readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.11"
 
 dependencies = [
-    "prefect==2.14.21",
-    "typer<=0.9.4",
+    "prefect==3.4.2",
+    "typer==0.15.4",
+    "mlflow==2.22.0",
+    "requests>=2.31.0",
+    "python-dotenv"
 ]
 
 [project.optional-dependencies]

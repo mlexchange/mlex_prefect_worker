@@ -1,5 +1,5 @@
 import tempfile
-
+import os
 import yaml
 from prefect import context, flow
 from prefect.states import Failed
@@ -7,6 +7,7 @@ from prefect.utilities.processutils import run_process
 
 from flows.docker.schema import DockerParams
 from flows.logger import setup_logger
+from flows.credentials import add_credentials_to_io_parameters
 
 
 @flow(name="Docker flow")
@@ -28,6 +29,8 @@ async def launch_docker(
     # Append current flow run id
     docker_params.params["io_parameters"]["uid_save"] = current_flow_run_id
 
+    # Add credentials to io_parameters at the child flow level
+    docker_params.params = add_credentials_to_io_parameters(docker_params.params)
     # Create temporary file for parameters
     with tempfile.NamedTemporaryFile(mode="w+t") as temp_file:
         yaml.dump(docker_params.params, temp_file)
