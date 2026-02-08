@@ -11,7 +11,7 @@ load_dotenv()
 # MLflow connection parameters - load from environment variables
 MLFLOW_TRACKING_USERNAME = os.getenv("MLFLOW_TRACKING_USERNAME", "")
 MLFLOW_TRACKING_PASSWORD = os.getenv("MLFLOW_TRACKING_PASSWORD", "")
-
+MLFLOW_TRACKING_TOKEN = os.getenv("MLFLOW_TRACKING_TOKEN", "")
 # Tiled API keys - load from environment variables
 DATA_TILED_API_KEY = os.getenv("DATA_TILED_API_KEY", "")
 MASK_TILED_API_KEY = os.getenv("MASK_TILED_API_KEY", "")
@@ -54,5 +54,6 @@ def add_credentials_to_io_parameters(params: dict) -> dict:
         io_params["mlflow_tracking_username"] = MLFLOW_TRACKING_USERNAME
     if "mlflow_tracking_password" not in io_params:
         io_params["mlflow_tracking_password"] = MLFLOW_TRACKING_PASSWORD
-    
+    if "mlflow_tracking_token" not in io_params:
+        io_params["mlflow_tracking_token"] = MLFLOW_TRACKING_TOKEN
     return params
