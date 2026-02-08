@@ -8,7 +8,7 @@ from prefect.utilities.processutils import run_process
 from flows.docker.schema import DockerParams
 from flows.logger import setup_logger
 from flows.credentials import add_credentials_to_io_parameters
-
+from flows.utils import get_additional_env_vars_for_container
 
 @flow(name="Docker flow")
 async def launch_docker(
@@ -41,7 +41,8 @@ async def launch_docker(
             f"{temp_file.name}:/app/work/config/params.yaml"
         ]
         command = f"{docker_params.command} /app/work/config/params.yaml"
-
+        additional_env_vars = get_additional_env_vars_for_container()
+        docker_params.env_vars.update(additional_env_vars)
         # Define docker command
         cmd = [
             "flows/docker/bash_run_docker.sh",

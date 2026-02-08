@@ -8,7 +8,7 @@ from prefect.utilities.processutils import run_process
 from flows.logger import setup_logger
 from flows.podman.schema import PodmanParams
 from flows.credentials import add_credentials_to_io_parameters
-
+from flows.utils import get_additional_env_vars_for_container
 
 @flow(name="Podman flow")
 async def launch_podman(
@@ -42,7 +42,8 @@ async def launch_podman(
             f"{temp_file.name}:/app/work/config/params.yaml"
         ]
         command = f"{podman_params.command} /app/work/config/params.yaml"
-
+        additional_env_vars = get_additional_env_vars_for_container()
+        podman_params.env_vars.update(additional_env_vars)    
         # Define podman command
         cmd = [
             "flows/podman/bash_run_podman.sh",

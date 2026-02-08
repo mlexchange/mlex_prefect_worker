@@ -240,3 +240,31 @@ def get_algorithm_details_from_mlflow(model_name: str, config: dict):
         import traceback
         logger.error(f"Traceback: {traceback.format_exc()}")
         raise
+
+
+def get_additional_env_vars_for_container() -> dict:
+    """
+    Retrieve additional environment variables to pass to the container from config.yml.
+    
+    Returns:
+        Dictionary of additional environment variables
+    """
+
+    # If a conf/container-env.yml exists, read it and add its
+    # key/values to the docker environment for the run command.
+    container_env_path = os.path.join("conf", "container-env.yml")
+    file_env = {}
+    if os.path.exists(container_env_path):
+        try:
+            with open(container_env_path, "r") as f:
+                loaded = yaml.safe_load(f) or {}
+            if isinstance(loaded, dict):
+                file_env = loaded
+            else:
+                logger.warning(
+                    f"{container_env_path} does not contain a mapping; skipping"
+                )
+        except Exception as e:
+            logger.warning(f"Failed to read {container_env_path}: {e}")
+
+    return file_env

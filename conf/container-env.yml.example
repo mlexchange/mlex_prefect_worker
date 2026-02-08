@@ -1,0 +1,3 @@
+# Copy this to container-env.yml and fill in the values to have them automatically injected into your container 
+# flows as environment variables. Do not commit this file with real values to git - it is ignored by .gitignore.
+MLFLOW_TRACKING_TOKEN: <mlflow tracking token goes here>

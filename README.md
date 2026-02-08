@@ -68,6 +68,12 @@ Edit `config.yml` to configure:
 - Container volume mounts and networks
 - Slurm job parameters
 
+## More Secret configuration
+If you have secret environment variables that you want to make sure are never in git:
+- Copy conf/container-env.yml.example to cont/container-enc.yml
+
+Any settings you put in the top level will be added to docker and podman invocations with `-e foo=bar`
+
 ## Monitoring
 
 Worker logs are stored in the `logs/` directory with the process ID in the filename:
